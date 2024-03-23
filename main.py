@@ -1,16 +1,17 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 import asyncio
 from data import (
     user_jwt_token,
+    initial_login,
     initial_blogs,
     initial_products,
     initial_users,
     initial_courses,
 )
 from uuid import UUID, uuid4
-from datetime import date, time
 from typing import Optional
 
 
@@ -24,15 +25,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/asset", StaticFiles(directory="asset"), name="asset")
+
 
 def genUUID():
     # random하게 UUID 생성
     return uuid4()
 
 
-class User(BaseModel):
-    name: str
-    email: str
+class LoginUser(BaseModel):
+    username: str
     password: str
 
 
@@ -49,37 +51,108 @@ class Blog(BaseModel):
     date: Optional[str] = None
 
 
+class Product(BaseModel):
+    id: int
+    productName: str
+    price: int
+    stockCount: int
+    thumbnailImg: str
+    option: list
+    discountRate: int
+    shippingFee: int
+    detailInfoImage: list
+    viewCount: int = 0
+    pubDate: str
+    modDate: str
+
+
+class User(BaseModel):
+    id: Optional[UUID] = Field(default_factory=genUUID)
+    index: Optional[str] = None
+    name: str
+    email: str
+    phone: Optional[str] = None
+    country: Optional[str] = None
+    address: Optional[str] = None
+    job: Optional[str] = None
+    int: Optional[str] = None
+
+
+class Course(BaseModel):
+    title: str
+    url: str
+    price: int
+    discount: int
+    students: int = 0
+    thumbnail: str
+    rating: float
+    reviews: int
+    level: str
+    category: str
+    published: str
+
+
 # 데이터 저장소 (메모리에 저장)
 # 초기 데이터 로드
 blogs = {i: initial_blogs[:] for i in range(1, 101)}
 products = {i: initial_products[:] for i in range(1, 101)}
-users_info = {i: initial_users[:] for i in range(1, 101)}
+users = {i: initial_users[:] for i in range(1, 101)}
 courses = {i: initial_courses[:] for i in range(1, 101)}
-users = {i + 1: User(**user) for i, user in enumerate(initial_users)}
+login_user = {i: initial_login[:] for i in range(1, 101)}
+
+####################### 회원가입 #######################
+
+# 회원가입 API 엔드포인트
+@app.post("/{api_id}/signup")
+async def signup(api_id: int, user: LoginUser):
+    # 이메일 중복 확인
+    if login_user[api_id] == []:
+        login_user[api_id].append({"username": user.username, "password": user.password})
+        return {"message": "User created successfully"}
+    else:
+        user_id_value = map(lambda x: x["username"], login_user[api_id])
+        if user.username in user_id_value:
+            return {"message": "User already exists"}
+        else:
+            login_user[api_id].append({"username": user.username, "password": user.password})
+            return {"message": "User created successfully"}
+
+# 회원 정보 API 엔드포인트
+@app.get("/{api_id}/login_user_info")
+async def get_users(api_id: int):
+    if api_id not in login_user:
+        raise HTTPException(status_code=404, detail="User data not found")
+    return login_user[api_id]
 
 
 # login API 엔드포인트
-@app.post("/login")
-async def login(email: str, password: str):
-    if email == "hojun@gmail.com" and password == "1234":
-        return {"token": user_jwt_token}
+@app.post("/{api_id}/login")
+async def login(api_id: int, user: LoginUser):
+    username = user.username
+    password = user.password
+    if api_id not in login_user:
+        raise HTTPException(status_code=404, detail="User data not found")
+    for i in login_user[api_id]:
+        if i["username"] == username and i["password"] == password:
+            return {"message": "Login success"} | user_jwt_token
+    return {"message": "Login failed"}
 
 
-# 회원가입 API 엔드포인트
-@app.post("/signup")
-async def signup(user: User):
-    # 이메일 중복 확인
-    for existing_user in users.values():
-        if user.email == existing_user.email:
-            raise HTTPException(status_code=400, detail="Email already exists")
+# login confirm API 엔드포인트(Bearer에서 jwt token(eyJhbGciOi.weniv.h8t7NJKEiWCh7G3) 확인)
+@app.post("/login_confirm")
+async def login_confirm(authorization: str = Header(None)):
+    # Authorization 헤더 확인
+    if authorization is None or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    # JWT 토큰 확인
+    token = authorization.split("Bearer ")[1]
+    if token != user_jwt_token["access_token"]:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return {"message": "Token is valid"}
 
-    # 사용자 추가
-    user_id = len(users) + 1
-    users[user_id] = user
 
-    return {"message": "User created successfully"}
-
-
+####################### 블로그 #######################
 # 블로그 리스트 API 엔드포인트
 @app.get("/{api_id}/blog")
 async def get_blogs(api_id: int):
@@ -123,9 +196,163 @@ async def delete_blog(api_id: int, blog_id: int):
         raise HTTPException(status_code=404, detail="Blog data not found")
     if blog_id > len(blogs[api_id]):
         raise HTTPException(status_code=404, detail="Blog data not found")
-    del blogs[api_id][blog_id - 1]
+    blogs[api_id][blog_id - 1] = {}
     return {"message": "Blog deleted successfully"}
 
+
+
+####################### 상품 #######################
+# 상품 리스트 API 엔드포인트
+@app.get("/{api_id}/product")
+async def get_products(api_id: int):
+    if api_id not in products:
+        raise HTTPException(status_code=404, detail="Product data not found")
+    return products[api_id]
+
+
+# 상품 상세 API 엔드포인트
+@app.get("/{api_id}/product/{product_id}")
+async def get_product_detail(api_id: int, product_id: int):
+    if api_id not in products:
+        raise HTTPException(status_code=404, detail="Product data not found")
+    if product_id < 1 or product_id > len(products[api_id]):
+        raise HTTPException(status_code=404, detail="Product not found")
+    return products[api_id][product_id - 1]
+
+
+# 상품 생성 API 엔드포인트
+@app.post("/{api_id}/product")
+async def create_product(api_id: int, product: Product):
+    if api_id not in products:
+        products[api_id] = []
+    products[api_id].append(product)
+    return {"message": "Product created successfully"}
+
+
+# 상품 수정 API 엔드포인트
+@app.put("/{api_id}/product/{product_id}")
+async def update_product(api_id: int, product_id: int, product: Product):
+    if api_id not in products:
+        raise HTTPException(status_code=404, detail="Product data not found")
+    if product_id < 1 or product_id > len(products[api_id]):
+        raise HTTPException(status_code=404, detail="Product not found")
+    products[api_id][product_id - 1] = product
+    return {"message": "Product updated successfully"}
+
+
+# 상품 삭제 API 엔드포인트
+@app.delete("/{api_id}/product/{product_id}")
+async def delete_product(api_id: int, product_id: int):
+    if api_id not in products:
+        raise HTTPException(status_code=404, detail="Product data not found")
+    if product_id < 1 or product_id > len(products[api_id]):
+        raise HTTPException(status_code=404, detail="Product not found")
+    products[api_id][product_id - 1] = {}
+    return {"message": "Product deleted successfully"}
+
+
+####################### 유저 #######################
+# 유저 리스트 API 엔드포인트
+@app.get("/{api_id}/user")
+async def get_users(api_id: int):
+    if api_id not in users:
+        raise HTTPException(status_code=404, detail="User data not found")
+    return users[api_id]
+
+
+# 유저 상세 API 엔드포인트
+@app.get("/{api_id}/user/{user_id}")
+async def get_user_detail(api_id: int, user_id: int):
+    if api_id not in users:
+        raise HTTPException(status_code=404, detail="User data not found")
+    if user_id < 1 or user_id > len(users[api_id]):
+        raise HTTPException(status_code=404, detail="User not found")
+    return users[api_id][user_id - 1]
+
+
+# 유저 생성 API 엔드포인트
+@app.post("/{api_id}/user")
+async def create_user(api_id: int, user: User):
+    if api_id not in users:
+        users[api_id] = []
+    users[api_id].append(user)
+    return {"message": "User created successfully"}
+
+
+# 유저 수정 API 엔드포인트
+@app.put("/{api_id}/user/{user_id}")
+async def update_user(api_id: int, user_id: int, user: User):
+    if api_id not in users:
+        raise HTTPException(status_code=404, detail="User data not found")
+    if user_id < 1 or user_id > len(users[api_id]):
+        raise HTTPException(status_code=404, detail="User not found")
+    users[api_id][user_id - 1] = user
+    return {"message": "User updated successfully"}
+
+
+# 유저 삭제 API 엔드포인트
+@app.delete("/{api_id}/user/{user_id}")
+async def delete_user(api_id: int, user_id: int):
+    if api_id not in users:
+        raise HTTPException(status_code=404, detail="User data not found")
+    if user_id < 1 or user_id > len(users[api_id]):
+        raise HTTPException(status_code=404, detail="User not found")
+    users[api_id][user_id - 1] = {}
+    return {"message": "User deleted successfully"}
+
+
+####################### 코스 #######################
+# 코스 리스트 API 엔드포인트
+@app.get("/{api_id}/course")
+async def get_courses(api_id: int):
+    if api_id not in courses:
+        raise HTTPException(status_code=404, detail="Course data not found")
+    return courses[api_id]
+
+
+# 코스 상세 API 엔드포인트
+@app.get("/{api_id}/course/{course_id}")
+async def get_course_detail(api_id: int, course_id: int):
+    if api_id not in courses:
+        raise HTTPException(status_code=404, detail="Course data not found")
+    if course_id < 1 or course_id > len(courses[api_id]):
+        raise HTTPException(status_code=404, detail="Course not found")
+    return courses[api_id][course_id - 1]
+
+
+# 코스 생성 API 엔드포인트
+@app.post("/{api_id}/course")
+async def create_course(api_id: int, course: Course):
+    if api_id not in courses:
+        courses[api_id] = []
+    courses[api_id].append(course)
+    return {"message": "Course created successfully"}
+
+
+# 코스 수정 API 엔드포인트
+@app.put("/{api_id}/course/{course_id}")
+async def update_course(api_id: int, course_id: int, course: Course):
+    if api_id not in courses:
+        raise HTTPException(status_code=404, detail="Course data not found")
+    if course_id < 1 or course_id > len(courses[api_id]):
+        raise HTTPException(status_code=404, detail="Course not found")
+    courses[api_id][course_id - 1] = course
+    return {"message": "Course updated successfully"}
+
+
+# 코스 삭제 API 엔드포인트
+@app.delete("/{api_id}/course/{course_id}")
+async def delete_course(api_id: int, course_id: int):
+    if api_id not in courses:
+        raise HTTPException(status_code=404, detail="Course data not found")
+    if course_id < 1 or course_id > len(courses[api_id]):
+        raise HTTPException(status_code=404, detail="Course not found")
+    courses[api_id][course_id - 1] = {}
+    return {"message": "Course deleted successfully"}
+
+
+
+####################### 데이터 초기화 #######################
 
 # 10분마다 데이터 초기화
 async def reset_data():
@@ -134,9 +361,9 @@ async def reset_data():
         await asyncio.sleep(600)  # 10분 대기
         blogs = {i: initial_blogs[:] for i in range(1, 101)}
         products = {i: initial_products[:] for i in range(1, 101)}
-        users_info = {i: initial_users[:] for i in range(1, 101)}
+        users = {i: initial_users[:] for i in range(1, 101)}
         courses = {i: initial_courses[:] for i in range(1, 101)}
-        users = {i + 1: User(**user) for i, user in enumerate(initial_users)}
+        login_user = {i: initial_login[:] for i in range(1, 101)}
 
 
 # 백그라운드 작업으로 데이터 초기화 실행
