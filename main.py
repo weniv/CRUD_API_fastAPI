@@ -94,28 +94,34 @@ class Course(BaseModel):
 
 # 데이터 저장소 (메모리에 저장)
 # 초기 데이터 로드
-blogs = {i: initial_blogs[:] for i in range(1, 101)}
-products = {i: initial_products[:] for i in range(1, 101)}
-users = {i: initial_users[:] for i in range(1, 101)}
-courses = {i: initial_courses[:] for i in range(1, 101)}
-login_user = {i: initial_login[:] for i in range(1, 101)}
+blogs = {i: initial_blogs[:] for i in range(1, 1001)}
+products = {i: initial_products[:] for i in range(1, 1001)}
+users = {i: initial_users[:] for i in range(1, 1001)}
+courses = {i: initial_courses[:] for i in range(1, 1001)}
+login_user = {i: initial_login[:] for i in range(1, 1001)}
 
 ####################### 회원가입 #######################
+
 
 # 회원가입 API 엔드포인트
 @app.post("/{api_id}/signup")
 async def signup(api_id: int, user: LoginUser):
     # 이메일 중복 확인
     if login_user[api_id] == []:
-        login_user[api_id].append({"username": user.username, "password": user.password})
+        login_user[api_id].append(
+            {"username": user.username, "password": user.password}
+        )
         return {"message": "User created successfully"}
     else:
         user_id_value = map(lambda x: x["username"], login_user[api_id])
         if user.username in user_id_value:
             return {"message": "User already exists"}
         else:
-            login_user[api_id].append({"username": user.username, "password": user.password})
+            login_user[api_id].append(
+                {"username": user.username, "password": user.password}
+            )
             return {"message": "User created successfully"}
+
 
 # 회원 정보 API 엔드포인트
 @app.get("/{api_id}/login_user_info")
@@ -144,7 +150,7 @@ async def login_confirm(authorization: str = Header(None)):
     # Authorization 헤더 확인
     if authorization is None or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid token")
-    
+
     # JWT 토큰 확인
     token = authorization.split("Bearer ")[1]
     if token != user_jwt_token["access_token"]:
@@ -198,7 +204,6 @@ async def delete_blog(api_id: int, blog_id: int):
         raise HTTPException(status_code=404, detail="Blog data not found")
     blogs[api_id][blog_id - 1] = {}
     return {"message": "Blog deleted successfully"}
-
 
 
 ####################### 상품 #######################
@@ -351,19 +356,19 @@ async def delete_course(api_id: int, course_id: int):
     return {"message": "Course deleted successfully"}
 
 
-
 ####################### 데이터 초기화 #######################
+
 
 # 10분마다 데이터 초기화
 async def reset_data():
     global blogs, products, users, courses
     while True:
         await asyncio.sleep(600)  # 10분 대기
-        blogs = {i: initial_blogs[:] for i in range(1, 101)}
-        products = {i: initial_products[:] for i in range(1, 101)}
-        users = {i: initial_users[:] for i in range(1, 101)}
-        courses = {i: initial_courses[:] for i in range(1, 101)}
-        login_user = {i: initial_login[:] for i in range(1, 101)}
+        blogs = {i: initial_blogs[:] for i in range(1, 1001)}
+        products = {i: initial_products[:] for i in range(1, 1001)}
+        users = {i: initial_users[:] for i in range(1, 1001)}
+        courses = {i: initial_courses[:] for i in range(1, 1001)}
+        login_user = {i: initial_login[:] for i in range(1, 1001)}
 
 
 # 백그라운드 작업으로 데이터 초기화 실행
