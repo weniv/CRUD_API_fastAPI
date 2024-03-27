@@ -356,6 +356,11 @@ async def delete_course(api_id: int, course_id: int):
     return {"message": "Course deleted successfully"}
 
 
+@app.get("/healthcheck")
+async def healthcheck():
+    return {"message": "healthcheck success"}
+
+
 ####################### 데이터 초기화 #######################
 
 
