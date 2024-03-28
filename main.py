@@ -13,7 +13,7 @@ from data import (
 )
 from uuid import UUID, uuid4
 from typing import Optional
-
+from starlette_prometheus import metrics, PrometheusMiddleware
 
 app = FastAPI()
 
@@ -24,9 +24,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(PrometheusMiddleware)
 
 app.mount("/asset", StaticFiles(directory="asset"), name="asset")
 
+app.add_route("/metrics/", metrics)
 
 def genUUID():
     # random하게 UUID 생성
@@ -99,6 +101,7 @@ products = {i: initial_products[:] for i in range(1, 1001)}
 users = {i: initial_users[:] for i in range(1, 1001)}
 courses = {i: initial_courses[:] for i in range(1, 1001)}
 login_user = {i: initial_login[:] for i in range(1, 1001)}
+
 
 ####################### 회원가입 #######################
 
