@@ -14,7 +14,7 @@ from data import (
 )
 from uuid import UUID, uuid4
 from typing import Optional
-
+from starlette_prometheus import metrics, PrometheusMiddleware
 
 app = FastAPI()
 
@@ -25,8 +25,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(PrometheusMiddleware)
 
 app.mount("/asset", StaticFiles(directory="asset"), name="asset")
+
+app.add_route("/metrics/", metrics)
 
 
 def genUUID():
@@ -100,6 +103,7 @@ products = {i: initial_products[:] for i in range(1, 1001)}
 users = {i: initial_users[:] for i in range(1, 1001)}
 courses = {i: initial_courses[:] for i in range(1, 1001)}
 login_user = {i: initial_login[:] for i in range(1, 1001)}
+
 
 ####################### 회원가입 #######################
 
@@ -364,6 +368,11 @@ async def delete_course(api_id: int, course_id: int):
 @app.get("/markdownblog")
 async def get_markdown_blog():
     return initial_markdown_blog
+
+
+@app.get("/healthcheck")
+async def healthcheck():
+    return {"message": "healthcheck success"}
 
 
 ####################### 데이터 초기화 #######################
