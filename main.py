@@ -104,6 +104,51 @@ users = {i: initial_users[:] for i in range(1, 1001)}
 courses = {i: initial_courses[:] for i in range(1, 1001)}
 login_user = {i: initial_login[:] for i in range(1, 1001)}
 
+####################### API 안내 #######################
+
+
+# API 안내
+@app.get("/")
+async def maininfo():
+    return {
+        "message": "Welcome to WENIV API",
+        "API": {
+            "Signup": "POST /{api_id}/signup",
+            "Login": "POST /{api_id}/login",
+            "Login User Info": "GET /{api_id}/login_user_info",
+            "Login Confirm": "POST /login_confirm",
+            "Blog": {
+                "Get Blogs": "GET /{api_id}/blog",
+                "Get Blog Detail": "GET /{api_id}/blog/{blog_id}",
+                "Create Blog": "POST /{api_id}/blog",
+                "Update Blog": "PUT /{api_id}/blog/{blog_id}",
+                "Delete Blog": "DELETE /{api_id}/blog/{blog_id}",
+            },
+            "Product": {
+                "Get Products": "GET /{api_id}/product",
+                "Get Product Detail": "GET /{api_id}/product/{product_id}",
+                "Create Product": "POST /{api_id}/product",
+                "Update Product": "PUT /{api_id}/product/{product_id}",
+                "Delete Product": "DELETE /{api_id}/product/{product_id}",
+            },
+            "User": {
+                "Get Users": "GET /{api_id}/user",
+                "Get User Detail": "GET /{api_id}/user/{user_id}",
+                "Create User": "POST /{api_id}/user",
+                "Update User": "PUT /{api_id}/user/{user_id}",
+                "Delete User": "DELETE /{api_id}/user/{user_id}",
+            },
+            "Course": {
+                "Get Courses": "GET /{api_id}/course",
+                "Get Course Detail": "GET /{api_id}/course/{course_id}",
+                "Create Course": "POST /{api_id}/course",
+                "Update Course": "PUT /{api_id}/course/{course_id}",
+                "Delete Course": "DELETE /{api_id}/course/{course_id}",
+            },
+            "Markdown Blog": {"Get Markdown Blog": "GET /markdownblog"},
+        },
+    }
+
 
 ####################### 회원가입 #######################
 
