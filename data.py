@@ -99,7 +99,10 @@ initial_products = [
         "option": [],
         "discountRate": 0,
         "shippingFee": 1500,
-        "detailInfoImage": ["asset/products/detail/2/detail1.png", "asset/products/detail/2/detail2.png"],
+        "detailInfoImage": [
+            "asset/products/detail/2/detail1.png",
+            "asset/products/detail/2/detail2.png",
+        ],
         "viewCount": 0,
         "pubDate": "2022-02-28",
         "modDate": "2022-02-28",
@@ -113,7 +116,10 @@ initial_products = [
         "option": [],
         "discountRate": 0,
         "shippingFee": 1500,
-        "detailInfoImage": ["asset/products/detail/2/detail1.png", "asset/products/detail/2/detail2.png"],
+        "detailInfoImage": [
+            "asset/products/detail/2/detail1.png",
+            "asset/products/detail/2/detail2.png",
+        ],
         "viewCount": 0,
         "pubDate": "2022-02-28",
         "modDate": "2022-02-28",
@@ -145,7 +151,10 @@ initial_products = [
         "option": [],
         "discountRate": 0,
         "shippingFee": 1500,
-        "detailInfoImage": ["asset/products/detail/4/detail1.png", "asset/products/detail/4/detail2.png"],
+        "detailInfoImage": [
+            "asset/products/detail/4/detail1.png",
+            "asset/products/detail/4/detail2.png",
+        ],
         "viewCount": 0,
         "pubDate": "2022-02-28",
         "modDate": "2022-02-28",
@@ -162,7 +171,10 @@ initial_products = [
         ],
         "discountRate": 19,
         "shippingFee": 1500,
-        "detailInfoImage": ["asset/products/detail/5/detail1.png", "asset/products/detail/5/detail2.png"],
+        "detailInfoImage": [
+            "asset/products/detail/5/detail1.png",
+            "asset/products/detail/5/detail2.png",
+        ],
         "viewCount": 0,
         "pubDate": "2022-02-28",
         "modDate": "2022-02-28",
@@ -204,7 +216,10 @@ initial_products = [
         "option": [],
         "discountRate": 0,
         "shippingFee": 1500,
-        "detailInfoImage": ["asset/products/detail/7/detail1.png", "asset/products/detail/7/detail2.png"],
+        "detailInfoImage": [
+            "asset/products/detail/7/detail1.png",
+            "asset/products/detail/7/detail2.png",
+        ],
         "viewCount": 0,
         "pubDate": "2022-02-28",
         "modDate": "2022-02-28",
@@ -351,5 +366,58 @@ initial_courses = [
         "level": "Intermediate",
         "category": "Web Development",
         "published": "2022-05-01",
+    },
+]
+
+
+initial_markdown_blog = [
+    {
+        "_id": "16118968-7332-4d5d-B815-1741bc01d43c",
+        "index": "1",
+        "thumbnail": "asset/blogs/1.webp",
+        "title": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt",
+        "content": "",
+        "email": "user-ww0qnop@Eu.com",
+        "author": "licat",
+        "views_count": "10527",
+        "time": "19:54:55",
+        "date": "2024-02-01",
+    },
+    {
+        "_id": "829b151c-fa81-4b14-B389-32c77b18b21b",
+        "index": "2",
+        "thumbnail": "asset/blogs/2.webp",
+        "title": "consectetur adipiscing elit, sed do eiusmod tempor incididunt",
+        "content": "",
+        "author": "gary",
+        "views_count": "39231",
+        "time": "20:46:34",
+        "date": "2024-04-29",
+    },
+]
+
+initial_markdown_blog = [
+    {
+        "_id": "16118968-7332-4d5d-B815-1741bc01d43c",
+        "index": "1",
+        "thumbnail": "asset/blogs/1.webp",
+        "title": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt",
+        "content": "# Lorem ipsum dolor sit amet\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \n\n![Sample Image](https://via.placeholder.com/500x300)\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n| Header 1 | Header 2 | Header 3 |\n|----------|----------|----------|\n| Cell 1   | Cell 2   | Cell 3   |\n| Cell 4   | Cell 5   | Cell 6   |\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+        "email": "user-ww0qnop@Eu.com",
+        "author": "licat",
+        "views_count": "10527",
+        "time": "19:54:55",
+        "date": "2024-02-01",
+    },
+    {
+        "_id": "829b151c-fa81-4b14-B389-32c77b18b21b",
+        "index": "2",
+        "thumbnail": "asset/blogs/2.webp",
+        "title": "consectetur adipiscing elit, sed do eiusmod tempor incididunt",
+        "content": '## consectetur adipiscing elit\n\nConsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\n```python\ndef hello_world():\n    print("Hello, World!")\n```\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\n![Another Sample Image](https://via.placeholder.com/400x200)\n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+        "author": "gary",
+        "views_count": "39231",
+        "time": "20:46:34",
+        "date": "2024-04-29",
     },
 ]

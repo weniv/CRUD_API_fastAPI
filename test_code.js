@@ -248,3 +248,11 @@ fetch('http://127.0.0.1:8000/1/user/1', {
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
+
+
+////////////////////////// 마크다운 블로그 요청 //////////////////////////
+
+fetch('http://127.0.0.1:8000/markdownblog')
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(error => console.error(error));

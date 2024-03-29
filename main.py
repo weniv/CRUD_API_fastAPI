@@ -10,6 +10,7 @@ from data import (
     initial_products,
     initial_users,
     initial_courses,
+    initial_markdown_blog,
 )
 from uuid import UUID, uuid4
 from typing import Optional
@@ -356,14 +357,23 @@ async def delete_course(api_id: int, course_id: int):
     return {"message": "Course deleted successfully"}
 
 
+####################### 마크다운 데이터 #######################
+
+
+# 코스 리스트 API 엔드포인트
+@app.get("/markdownblog")
+async def get_markdown_blog():
+    return initial_markdown_blog
+
+
 ####################### 데이터 초기화 #######################
 
 
-# 10분마다 데이터 초기화
+# 30분마다 데이터 초기화
 async def reset_data():
     global blogs, products, users, courses
     while True:
-        await asyncio.sleep(600)  # 10분 대기
+        await asyncio.sleep(1800)  # 30분 대기
         blogs = {i: initial_blogs[:] for i in range(1, 1001)}
         products = {i: initial_products[:] for i in range(1, 1001)}
         users = {i: initial_users[:] for i in range(1, 1001)}
