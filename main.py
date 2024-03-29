@@ -370,6 +370,9 @@ async def get_markdown_blog():
     return initial_markdown_blog
 
 
+####################### 서버 활성화 체크 #######################
+
+
 @app.get("/healthcheck")
 async def healthcheck():
     return {"message": "healthcheck success"}
