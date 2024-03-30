@@ -130,6 +130,7 @@ async def maininfo():
                 "Create Product": "POST /{api_id}/product",
                 "Update Product": "PUT /{api_id}/product/{product_id}",
                 "Delete Product": "DELETE /{api_id}/product/{product_id}",
+                "Search Product": "GET /{api_id}/product/search?keyword={search_keyword}",
             },
             "User": {
                 "Get Users": "GET /{api_id}/user",
@@ -273,6 +274,18 @@ async def get_product_detail(api_id: int, product_id: int):
     if product_id < 1 or product_id > len(products[api_id]):
         raise HTTPException(status_code=404, detail="Product not found")
     return products[api_id][product_id - 1]
+
+
+# 상품 검색 API 엔드포인트
+@app.get("/{api_id}/product/search")
+async def search_product(api_id: int, keyword: str):
+    if api_id not in products:
+        raise HTTPException(status_code=404, detail="Product data not found")
+    result = []
+    for product in products[api_id]:
+        if keyword in product["productName"]:
+            result.append(product)
+    return result
 
 
 # 상품 생성 API 엔드포인트
