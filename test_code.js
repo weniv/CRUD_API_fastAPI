@@ -1,7 +1,7 @@
 // test를 위한 js 파일
 
 // 회원 가입 fetch를 이용한 POST 요청
-fetch('http://127.0.0.1:8000/1/signup/', {
+fetch('https://eduapi.weniv.co.kr/1/signup/', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -15,7 +15,7 @@ fetch('http://127.0.0.1:8000/1/signup/', {
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
-fetch('http://127.0.0.1:8000/1/signup/', {
+fetch('https://eduapi.weniv.co.kr/1/signup/', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -30,13 +30,13 @@ fetch('http://127.0.0.1:8000/1/signup/', {
     .catch(error => console.error(error));
 
 // 회원가입이 제대로 되었는지 확인하기 위한 GET 요청
-fetch('http://127.0.0.1:8000/1/login_user_info/')
+fetch('https://eduapi.weniv.co.kr/1/login_user_info/')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
 // 로그인 fetch를 이용한 POST 요청
-fetch('http://127.0.0.1:8000/1/login/', {
+fetch('https://eduapi.weniv.co.kr/1/login/', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ fetch('http://127.0.0.1:8000/1/login/', {
     .catch(error => console.error(error));
 
 // 로그인이 제대로 되었는지 확인하기 위한 POST 요청(Bearer Token 필요)
-fetch('http://127.0.0.1:8000/login_confirm/', {
+fetch('https://eduapi.weniv.co.kr/login_confirm/', {
     method: 'POST',
     headers: {
         'Authorization': 'Bearer eyJhbGciOi.weniv.h8t7NJKEiWCh7G3',
@@ -64,19 +64,19 @@ fetch('http://127.0.0.1:8000/login_confirm/', {
 
 ////////////////////////// 블로그 관련 fetch 요청 //////////////////////////
 // 블로그 리스트 fetch를 이용한 GET 요청
-fetch('http://127.0.0.1:8000/1/blog/')
+fetch('https://eduapi.weniv.co.kr/1/blog/')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
 // 블로그 상세 fetch를 이용한 GET 요청
-fetch('http://127.0.0.1:8000/1/blog/1')
+fetch('https://eduapi.weniv.co.kr/1/blog/1')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
 // 블로그 생성 fetch를 이용한 POST 요청
-fetch('http://127.0.0.1:8000/1/blog/', {
+fetch('https://eduapi.weniv.co.kr/1/blog/', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ fetch('http://127.0.0.1:8000/1/blog/', {
 
 
 // 블로그 수정 fetch를 이용한 PUT 요청
-fetch('http://127.0.0.1:8000/1/blog/1', {
+fetch('https://eduapi.weniv.co.kr/1/blog/1', {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ fetch('http://127.0.0.1:8000/1/blog/1', {
 
 
 // 블로그 삭제 fetch를 이용한 DELETE 요청
-fetch('http://127.0.0.1:8000/1/blog/1', {
+fetch('https://eduapi.weniv.co.kr/1/blog/1', {
     method: 'DELETE',
 })
     .then(response => response.json())
@@ -118,19 +118,19 @@ fetch('http://127.0.0.1:8000/1/blog/1', {
 
 ////////////////////////// 상품 관련 fetch 요청 //////////////////////////
 // 상품 리스트 fetch를 이용한 GET 요청
-fetch('http://127.0.0.1:8000/1/product/')
+fetch('https://eduapi.weniv.co.kr/1/product/')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
 // 상품 상세 fetch를 이용한 GET 요청
-fetch('http://127.0.0.1:8000/1/product/1')
+fetch('https://eduapi.weniv.co.kr/1/product/1')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
 // 상품 생성 fetch를 이용한 POST 요청
-fetch('http://127.0.0.1:8000/1/product/', {
+fetch('https://eduapi.weniv.co.kr/1/product/', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ fetch('http://127.0.0.1:8000/1/product/', {
     .catch(error => console.error(error));
 
 // 상품 수정 fetch를 이용한 PUT 요청
-fetch('http://127.0.0.1:8000/1/product/1', {
+fetch('https://eduapi.weniv.co.kr/1/product/1', {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
@@ -180,7 +180,7 @@ fetch('http://127.0.0.1:8000/1/product/1', {
     .catch(error => console.error(error));
 
 // 상품 삭제 fetch를 이용한 DELETE 요청
-fetch('http://127.0.0.1:8000/1/product/1', {
+fetch('https://eduapi.weniv.co.kr/1/product/1', {
     method: 'DELETE',
 })
     .then(response => response.json())
@@ -190,19 +190,19 @@ fetch('http://127.0.0.1:8000/1/product/1', {
 
 ////////////////////////// 유저 관련 fetch 요청 //////////////////////////
 // 유저 리스트 fetch를 이용한 GET 요청
-fetch('http://127.0.0.1:8000/1/user/')
+fetch('https://eduapi.weniv.co.kr/1/user/')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
 // 유저 상세 fetch를 이용한 GET 요청
-fetch('http://127.0.0.1:8000/1/user/1')
+fetch('https://eduapi.weniv.co.kr/1/user/1')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
 // 유저 생성 fetch를 이용한 POST 요청
-fetch('http://127.0.0.1:8000/1/user/', {
+fetch('https://eduapi.weniv.co.kr/1/user/', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -222,7 +222,7 @@ fetch('http://127.0.0.1:8000/1/user/', {
     .catch(error => console.error(error));
 
 // 유저 수정 fetch를 이용한 PUT 요청
-fetch('http://127.0.0.1:8000/1/user/1', {
+fetch('https://eduapi.weniv.co.kr/1/user/1', {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
@@ -242,7 +242,7 @@ fetch('http://127.0.0.1:8000/1/user/1', {
     .catch(error => console.error(error));
 
 // 유저 삭제 fetch를 이용한 DELETE 요청
-fetch('http://127.0.0.1:8000/1/user/1', {
+fetch('https://eduapi.weniv.co.kr/1/user/1', {
     method: 'DELETE',
 })
     .then(response => response.json())
@@ -252,7 +252,15 @@ fetch('http://127.0.0.1:8000/1/user/1', {
 
 ////////////////////////// 마크다운 블로그 요청 //////////////////////////
 
-fetch('http://127.0.0.1:8000/markdownblog')
+fetch('https://eduapi.weniv.co.kr/markdownblog')
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(error => console.error(error));
+
+
+////////////////////////// 검색 기능 //////////////////////////
+
+fetch('https://eduapi.weniv.co.kr/1/productsearch?keyword=key')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
