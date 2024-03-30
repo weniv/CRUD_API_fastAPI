@@ -8,7 +8,7 @@ venv### JetBrains+all template
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-
+logs
 # AWS User-specific
 .idea/**/aws.xml
 
