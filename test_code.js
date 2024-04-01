@@ -1,7 +1,7 @@
 // test를 위한 js 파일
 
 // 회원 가입 fetch를 이용한 POST 요청
-fetch('https://eduapi.weniv.co.kr/1/signup/', {
+fetch('https://eduapi.weniv.co.kr/1/signup', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -15,7 +15,7 @@ fetch('https://eduapi.weniv.co.kr/1/signup/', {
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
-fetch('https://eduapi.weniv.co.kr/1/signup/', {
+fetch('https://eduapi.weniv.co.kr/1/signup', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -30,13 +30,13 @@ fetch('https://eduapi.weniv.co.kr/1/signup/', {
     .catch(error => console.error(error));
 
 // 회원가입이 제대로 되었는지 확인하기 위한 GET 요청
-fetch('https://eduapi.weniv.co.kr/1/login_user_info/')
+fetch('https://eduapi.weniv.co.kr/1/login_user_info')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
 
 // 로그인 fetch를 이용한 POST 요청
-fetch('https://eduapi.weniv.co.kr/1/login/', {
+fetch('https://eduapi.weniv.co.kr/1/login', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ fetch('https://eduapi.weniv.co.kr/1/login/', {
     .catch(error => console.error(error));
 
 // 로그인이 제대로 되었는지 확인하기 위한 POST 요청(Bearer Token 필요)
-fetch('https://eduapi.weniv.co.kr/login_confirm/', {
+fetch('https://eduapi.weniv.co.kr/login_confirm', {
     method: 'POST',
     headers: {
         'Authorization': 'Bearer eyJhbGciOi.weniv.h8t7NJKEiWCh7G3',
@@ -64,7 +64,7 @@ fetch('https://eduapi.weniv.co.kr/login_confirm/', {
 
 ////////////////////////// 블로그 관련 fetch 요청 //////////////////////////
 // 블로그 리스트 fetch를 이용한 GET 요청
-fetch('https://eduapi.weniv.co.kr/1/blog/')
+fetch('https://eduapi.weniv.co.kr/1/blog')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
@@ -76,7 +76,7 @@ fetch('https://eduapi.weniv.co.kr/1/blog/1')
     .catch(error => console.error(error));
 
 // 블로그 생성 fetch를 이용한 POST 요청
-fetch('https://eduapi.weniv.co.kr/1/blog/', {
+fetch('https://eduapi.weniv.co.kr/1/blog', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ fetch('https://eduapi.weniv.co.kr/1/blog/1', {
 
 ////////////////////////// 상품 관련 fetch 요청 //////////////////////////
 // 상품 리스트 fetch를 이용한 GET 요청
-fetch('https://eduapi.weniv.co.kr/1/product/')
+fetch('https://eduapi.weniv.co.kr/1/product')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
@@ -130,7 +130,7 @@ fetch('https://eduapi.weniv.co.kr/1/product/1')
     .catch(error => console.error(error));
 
 // 상품 생성 fetch를 이용한 POST 요청
-fetch('https://eduapi.weniv.co.kr/1/product/', {
+fetch('https://eduapi.weniv.co.kr/1/product', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -188,9 +188,26 @@ fetch('https://eduapi.weniv.co.kr/1/product/1', {
     .catch(error => console.error(error));
 
 
+// 상품 검색 fetch를 이용한 GET 요청
+const url = 'https://eduapi.weniv.co.kr/753/product/search';
+const params = new URLSearchParams({ keyword: 'keyring' });
+
+fetch(`${url}?${params}`)
+    .then(response => {
+        console.log(response.status);
+        return response.text();
+    })
+    .then(data => {
+        console.log(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+
 ////////////////////////// 유저 관련 fetch 요청 //////////////////////////
 // 유저 리스트 fetch를 이용한 GET 요청
-fetch('https://eduapi.weniv.co.kr/1/user/')
+fetch('https://eduapi.weniv.co.kr/1/user')
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
@@ -202,7 +219,7 @@ fetch('https://eduapi.weniv.co.kr/1/user/1')
     .catch(error => console.error(error));
 
 // 유저 생성 fetch를 이용한 POST 요청
-fetch('https://eduapi.weniv.co.kr/1/user/', {
+fetch('https://eduapi.weniv.co.kr/1/user', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
