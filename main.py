@@ -20,7 +20,7 @@ from typing import Optional
 from starlette_prometheus import metrics, PrometheusMiddleware
 
 
-version_time = datetime.datetime().now().strftime("%Y-%m-%d %H:%M:%S")
+version_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 app = FastAPI(title="WENIV EDU API", description="WENIV EDU API", version=version_time)
 
 app.add_middleware(
