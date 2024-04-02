@@ -192,7 +192,7 @@ async def get_markdown_blog():
 
 
 # login confirm API 엔드포인트(Bearer에서 jwt token(eyJhbGciOi.weniv.h8t7NJKEiWCh7G3) 확인)
-@app.post("/login_confirm", tags=["Login Confirm Endpoint"],description="로그인 확인 API")
+@app.post("/login_confirm", tags=["Auth Endpoint"],description="로그인 확인 API")
 async def login_confirm(authorization: str = Header(None)):
     # Authorization 헤더 확인
     if authorization is None or not authorization.startswith("Bearer "):
@@ -206,7 +206,7 @@ async def login_confirm(authorization: str = Header(None)):
 
 
 # 회원가입 API 엔드포인트
-@app.post("/{api_id}/signup", tags=["Signup Endpoint"],description="회원가입 API")
+@app.post("/{api_id}/signup", tags=["Auth Endpoint"],description="회원가입 API")
 async def signup(api_id: int, user: LoginUser):
     # 이메일 중복 확인
     if login_user[api_id] == []:
@@ -226,7 +226,7 @@ async def signup(api_id: int, user: LoginUser):
 
 
 # login API 엔드포인트
-@app.post("/{api_id}/login", tags=["Login Endpoint"],description="로그인 API")
+@app.post("/{api_id}/login", tags=["Auth Endpoint"],description="로그인 API")
 async def login(api_id: int, user: LoginUser):
     username = user.username
     password = user.password
@@ -239,7 +239,7 @@ async def login(api_id: int, user: LoginUser):
 
 
 # 회원 정보 API 엔드포인트
-@app.get("/{api_id}/login_user_info", tags=["Login User Info Endpoint"],description="로그인 유저 정보 API")
+@app.get("/{api_id}/login_user_info", tags=["Auth Endpoint"],description="로그인 유저 정보 API")
 async def get_users(api_id: int):
     if api_id not in login_user:
         raise HTTPException(status_code=404, detail="User data not found")
@@ -250,7 +250,7 @@ async def get_users(api_id: int):
 
 
 # 블로그 상세 API 엔드포인트
-@app.get("/{api_id}/blog/{blog_id}", tags=["Blog Detail Endpoint"],description="블로그 상세 API")
+@app.get("/{api_id}/blog/{blog_id}", tags=["Blog Endpoint"],description="블로그 상세 API")
 async def get_blogs(api_id: int, blog_id: int):
     if api_id not in blogs:
         raise HTTPException(status_code=404, detail="Blog data not found")
@@ -258,7 +258,7 @@ async def get_blogs(api_id: int, blog_id: int):
 
 
 # 블로그 생성 API 엔드포인트
-@app.post("/{api_id}/blog", tags=["Blog Create Endpoint"],description="블로그 생성 API")
+@app.post("/{api_id}/blog", tags=["Blog Endpoint"],description="블로그 생성 API")
 async def create_blog(api_id: int, blog: Blog):
     if api_id not in blogs:
         blogs[api_id] = []
@@ -267,7 +267,7 @@ async def create_blog(api_id: int, blog: Blog):
 
 
 # 블로그 수정 API 엔드포인트
-@app.put("/{api_id}/blog/{blog_id}", tags=["Blog Update Endpoint"],description="블로그 수정 API")
+@app.put("/{api_id}/blog/{blog_id}", tags=["Blog Endpoint"],description="블로그 수정 API")
 async def update_blog(api_id: int, blog_id: int, blog: Blog):
     if api_id not in blogs:
         raise HTTPException(status_code=404, detail="Blog data not found")
@@ -278,7 +278,7 @@ async def update_blog(api_id: int, blog_id: int, blog: Blog):
 
 
 # 블로그 삭제 API 엔드포인트
-@app.delete("/{api_id}/blog/{blog_id}", tags=["Blog Delete Endpoint"],description="블로그 삭제 API")
+@app.delete("/{api_id}/blog/{blog_id}", tags=["Blog Endpoint"],description="블로그 삭제 API")
 async def delete_blog(api_id: int, blog_id: int):
     if api_id not in blogs:
         raise HTTPException(status_code=404, detail="Blog data not found")
@@ -289,7 +289,7 @@ async def delete_blog(api_id: int, blog_id: int):
 
 
 # 블로그 리스트 API 엔드포인트
-@app.get("/{api_id}/blog", tags=["Blog List Endpoint"],description="블로그 리스트 API")
+@app.get("/{api_id}/blog", tags=["Blog Endpoint"],description="블로그 리스트 API")
 async def get_blogs(api_id: int):
     if api_id not in blogs:
         raise HTTPException(status_code=404, detail="Blog data not found")
@@ -300,7 +300,7 @@ async def get_blogs(api_id: int):
 
 
 # 상품 검색 API 엔드포인트
-@app.get("/{api_id}/product/search", tags=["Product Search Endpoint"],description="상품 검색 API")
+@app.get("/{api_id}/product/search", tags=["Product Endpoint"],description="상품 검색 API")
 async def search_product(api_id: int, keyword: str):
     if api_id not in products:
         raise HTTPException(status_code=404, detail="Product data not found")
@@ -312,7 +312,7 @@ async def search_product(api_id: int, keyword: str):
 
 
 # 상품 상세 API 엔드포인트
-@app.get("/{api_id}/product/{product_id}", tags=["Product Detail Endpoint"],description="상품 상세 API")
+@app.get("/{api_id}/product/{product_id}", tags=["Product Endpoint"],description="상품 상세 API")
 async def get_product_detail(api_id: int, product_id: int):
     if api_id not in products:
         raise HTTPException(status_code=404, detail="Product data not found")
@@ -322,7 +322,7 @@ async def get_product_detail(api_id: int, product_id: int):
 
 
 # 상품 생성 API 엔드포인트
-@app.post("/{api_id}/product", tags=["Product Create Endpoint"],description="상품 생성 API")
+@app.post("/{api_id}/product", tags=["Product Endpoint"],description="상품 생성 API")
 async def create_product(api_id: int, product: Product):
     if api_id not in products:
         products[api_id] = []
@@ -331,7 +331,7 @@ async def create_product(api_id: int, product: Product):
 
 
 # 상품 수정 API 엔드포인트
-@app.put("/{api_id}/product/{product_id}", tags=["Product Update Endpoint"],description="상품 수정 API")
+@app.put("/{api_id}/product/{product_id}", tags=["Product Endpoint"],description="상품 수정 API")
 async def update_product(api_id: int, product_id: int, product: Product):
     if api_id not in products:
         raise HTTPException(status_code=404, detail="Product data not found")
@@ -342,7 +342,7 @@ async def update_product(api_id: int, product_id: int, product: Product):
 
 
 # 상품 삭제 API 엔드포인트
-@app.delete("/{api_id}/product/{product_id}", tags=["Product Delete Endpoint"],description="상품 삭제 API")
+@app.delete("/{api_id}/product/{product_id}", tags=["Product Endpoint"],description="상품 삭제 API")
 async def delete_product(api_id: int, product_id: int):
     if api_id not in products:
         raise HTTPException(status_code=404, detail="Product data not found")
@@ -353,7 +353,7 @@ async def delete_product(api_id: int, product_id: int):
 
 
 # 상품 리스트 API 엔드포인트
-@app.get("/{api_id}/product", tags=["Product List Endpoint"],description="상품 리스트 API")
+@app.get("/{api_id}/product", tags=["Product Endpoint"],description="상품 리스트 API")
 async def get_products(api_id: int):
     if api_id not in products:
         raise HTTPException(status_code=404, detail="Product data not found")
@@ -364,7 +364,7 @@ async def get_products(api_id: int):
 
 
 # 유저 상세 API 엔드포인트
-@app.get("/{api_id}/user/{user_id}", tags=["User Detail Endpoint"],description="유저 상세 API")
+@app.get("/{api_id}/user/{user_id}", tags=["User Endpoint"],description="유저 상세 API")
 async def get_user_detail(api_id: int, user_id: int):
     if api_id not in users:
         raise HTTPException(status_code=404, detail="User data not found")
@@ -374,7 +374,7 @@ async def get_user_detail(api_id: int, user_id: int):
 
 
 # 유저 생성 API 엔드포인트
-@app.post("/{api_id}/user", tags=["User Create Endpoint"],description="유저 생성 API")
+@app.post("/{api_id}/user", tags=["User Endpoint"],description="유저 생성 API")
 async def create_user(api_id: int, user: User):
     if api_id not in users:
         users[api_id] = []
@@ -383,7 +383,7 @@ async def create_user(api_id: int, user: User):
 
 
 # 유저 수정 API 엔드포인트
-@app.put("/{api_id}/user/{user_id}", tags=["User Update Endpoint"],description="유저 수정 API")
+@app.put("/{api_id}/user/{user_id}", tags=["User Endpoint"],description="유저 수정 API")
 async def update_user(api_id: int, user_id: int, user: User):
     if api_id not in users:
         raise HTTPException(status_code=404, detail="User data not found")
@@ -394,7 +394,7 @@ async def update_user(api_id: int, user_id: int, user: User):
 
 
 # 유저 삭제 API 엔드포인트
-@app.delete("/{api_id}/user/{user_id}", tags=["User Delete Endpoint"],description="유저 삭제 API")
+@app.delete("/{api_id}/user/{user_id}", tags=["User Endpoint"],description="유저 삭제 API")
 async def delete_user(api_id: int, user_id: int):
     if api_id not in users:
         raise HTTPException(status_code=404, detail="User data not found")
@@ -405,7 +405,7 @@ async def delete_user(api_id: int, user_id: int):
 
 
 # 유저 리스트 API 엔드포인트
-@app.get("/{api_id}/user", tags=["User List Endpoint"],description="유저 리스트 API")
+@app.get("/{api_id}/user", tags=["User Endpoint"],description="유저 리스트 API")
 async def get_users(api_id: int):
     if api_id not in users:
         raise HTTPException(status_code=404, detail="User data not found")
@@ -416,7 +416,7 @@ async def get_users(api_id: int):
 
 
 # 코스 상세 API 엔드포인트
-@app.get("/{api_id}/course/{course_id}", tags=["Course Detail Endpoint"],description="코스 상세 API")
+@app.get("/{api_id}/course/{course_id}", tags=["Course Endpoint"],description="코스 상세 API")
 async def get_course_detail(api_id: int, course_id: int):
     if api_id not in courses:
         raise HTTPException(status_code=404, detail="Course data not found")
@@ -426,7 +426,7 @@ async def get_course_detail(api_id: int, course_id: int):
 
 
 # 코스 생성 API 엔드포인트
-@app.post("/{api_id}/course", tags=["Course Create Endpoint"],description="코스 생성 API")
+@app.post("/{api_id}/course", tags=["Course Endpoint"],description="코스 생성 API")
 async def create_course(api_id: int, course: Course):
     if api_id not in courses:
         courses[api_id] = []
@@ -435,7 +435,7 @@ async def create_course(api_id: int, course: Course):
 
 
 # 코스 수정 API 엔드포인트
-@app.put("/{api_id}/course/{course_id}", tags=["Course Update Endpoint"],description="코스 수정 API")
+@app.put("/{api_id}/course/{course_id}", tags=["Course Endpoint"],description="코스 수정 API")
 async def update_course(api_id: int, course_id: int, course: Course):
     if api_id not in courses:
         raise HTTPException(status_code=404, detail="Course data not found")
@@ -446,7 +446,7 @@ async def update_course(api_id: int, course_id: int, course: Course):
 
 
 # 코스 삭제 API 엔드포인트
-@app.delete("/{api_id}/course/{course_id}", tags=["Course Delete Endpoint"],description="코스 삭제 API")
+@app.delete("/{api_id}/course/{course_id}", tags=["Course Endpoint"],description="코스 삭제 API")
 async def delete_course(api_id: int, course_id: int):
     if api_id not in courses:
         raise HTTPException(status_code=404, detail="Course data not found")
@@ -457,7 +457,7 @@ async def delete_course(api_id: int, course_id: int):
 
 
 # 코스 리스트 API 엔드포인트
-@app.get("/{api_id}/course", tags=["Course List Endpoint"],description="코스 리스트 API")
+@app.get("/{api_id}/course", tags=["Course Endpoint"],description="코스 리스트 API")
 async def get_courses(api_id: int):
     if api_id not in courses:
         raise HTTPException(status_code=404, detail="Course data not found")
