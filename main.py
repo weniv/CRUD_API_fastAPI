@@ -174,7 +174,7 @@ URL 패턴의 순서를 고려하여 함수를 선언하는 것이 좋습니다.
 ####################### 서버 활성화 체크 #######################
 
 
-@app.get("/healthcheck")
+@app.get("/healthcheck",deprecated=True)
 async def healthcheck():
     return {"message": "healthcheck success"}
 
