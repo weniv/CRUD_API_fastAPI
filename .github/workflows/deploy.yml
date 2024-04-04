@@ -1,0 +1,46 @@
+name: FAST API CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 체크아웃 레포지토리
+        uses: actions/checkout@v3
+
+      - name: 파이썬 설정
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.11'
+
+      - name: 의존성 설치
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+#      - name: 서버 배포
+      - name: ssh deploy
+        uses: easingthemes/ssh-deploy@v5.0.3
+        with:
+            # Private key part of an SSH key pair
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_PRIVATEKEY }}
+            # Remote host
+          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+            # Remote user
+          REMOTE_USER: ${{ secrets.SERVER_USER }}
+
+          TARGET: ${{ secrets.APP_DIR }}
+
+          SCRIPT_AFTER: |
+            cd ${{ secrets.APP_DIR }}
+            git pull origin main
+            source venv/bin/activate
+            pip install -r requirements.txt
+            sudo systemctl restart crud
+
+
