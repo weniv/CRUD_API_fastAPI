@@ -23,7 +23,7 @@ from uuid import UUID, uuid4
 from typing import Optional
 from starlette_prometheus import metrics, PrometheusMiddleware
 
-exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**",
+exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**","/.env","/metrics/"
                      "Public/**", ".well-known/**", "backend/**", "config/**",
                      "/dns-query", "/favicorn.ico", "/grafana", "/grafana/**",
                      "/index.js", "/info.php", "/mail/**", "openapi.json",
