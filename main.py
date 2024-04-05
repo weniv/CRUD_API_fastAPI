@@ -36,7 +36,9 @@ exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**",
 
 class CustomPrometheusMiddleware(PrometheusMiddleware):
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        if request.url.path not in
+        if request.url.path in exclude_endpoints:
+            return await call_next(request)
+        else:
             return await super().dispatch(request, call_next)
 
 
