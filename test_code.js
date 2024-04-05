@@ -277,7 +277,73 @@ fetch('https://eduapi.weniv.co.kr/markdownblog')
 
 ////////////////////////// 검색 기능 //////////////////////////
 
-fetch('https://eduapi.weniv.co.kr/1/productsearch?keyword=key')
+fetch('https://eduapi.weniv.co.kr/1/product/search?keyword=key')
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(error => console.error(error));
+
+////////////////////////// 코스 관련 fetch 요청 //////////////////////////
+
+// 코스 리스트 fetch를 이용한 GET 요청
+fetch('https://eduapi.weniv.co.kr/1/course')
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(error => console.error(error));
+
+// 코스 상세 fetch를 이용한 GET 요청
+fetch('https://eduapi.weniv.co.kr/1/course/1')
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(error => console.error(error));
+
+// 코스 생성 fetch를 이용한 POST 요청
+fetch('https://eduapi.weniv.co.kr/1/course', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        id: 1,
+        title: 'New Course',
+        content: 'New Course Content',
+        thumbnailImg: 'asset/courses/img/new/1.jpg',
+        price: 10000,
+        discountRate: 0,
+        viewCount: 0,
+        pubDate: '2023-06-01',
+        modDate: '2023-06-01',
+    }),
+})
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(error => console.error(error));
+
+// 코스 수정 fetch를 이용한 PUT 요청
+fetch('https://eduapi.weniv.co.kr/1/course/1', {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        id: 1,
+        title: 'Updated Course',
+        content: 'Updated Course Content',
+        thumbnailImg: 'asset/courses/img/new/1.jpg',
+        price: 15000,
+        discountRate: 10,
+        viewCount: 0,
+        pubDate: '2023-06-01',
+        modDate: '2023-06-02',
+    }),
+})
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(error => console.error(error));
+
+// 코스 삭제 fetch를 이용한 DELETE 요청
+fetch('https://eduapi.weniv.co.kr/1/course/1', {
+    method: 'DELETE',
+})
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => console.error(error));
