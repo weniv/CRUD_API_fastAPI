@@ -1,11 +1,15 @@
 import datetime
-import time
 
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 import asyncio
+
+from starlette.middleware.base import RequestResponseEndpoint
+from starlette.requests import Request
+from starlette.responses import Response
+
 from data import (
     user_jwt_token,
     initial_login,
@@ -19,6 +23,22 @@ from uuid import UUID, uuid4
 from typing import Optional
 from starlette_prometheus import metrics, PrometheusMiddleware
 
+exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**",
+                     "Public/**", ".well-known/**", "backend/**", "config/**",
+                     "/dns-query", "/favicorn.ico", "/grafana", "/grafana/**",
+                     "/index.js", "/info.php", "/mail/**", "openapi.json",
+                     "/owa/**", "/phpinfo.php", "/phpginfo/**",
+                     "/product/**", "/robots.txt", "/s3.js", "/script/**",
+                     "/settings.py", "/sitemap.xml", "staging/**", "/version", "/wp-config.php",
+                     "/wp-login.php", "/wp-admin/**", "/wp-content/**", "/wp-includes/**",
+                     "/wp-config.php.bak", "/assets/**", "/asset/**", "/static/**", "/static", ]
+
+
+class CustomPrometheusMiddleware(PrometheusMiddleware):
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+        if request.url.path not in
+            return await super().dispatch(request, call_next)
+
 
 version_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 app = FastAPI(title="WENIV EDU API", description="WENIV EDU API", version=version_time)
@@ -30,7 +50,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(PrometheusMiddleware)
+
+app.add_middleware(CustomPrometheusMiddleware)
 
 app.mount("/asset", StaticFiles(directory="asset"), name="asset")
 
