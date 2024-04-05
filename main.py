@@ -23,15 +23,17 @@ from uuid import UUID, uuid4
 from typing import Optional
 from starlette_prometheus import metrics, PrometheusMiddleware
 
-exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**","/.env","/metrics/"
+exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**", "/.env",
+                     "/metrics", "/metrics/", "/metrics/**",
                      "Public/**", ".well-known/**", "backend/**", "config/**",
-                     "/dns-query", "/favicorn.ico", "/grafana", "/grafana/**",
+                     "/dns-query", "/favicon.ico", "/grafana", "/grafana/**",
                      "/index.js", "/info.php", "/mail/**", "openapi.json",
                      "/owa/**", "/phpinfo.php", "/phpginfo/**",
                      "/product/**", "/robots.txt", "/s3.js", "/script/**",
                      "/settings.py", "/sitemap.xml", "staging/**", "/version", "/wp-config.php",
                      "/wp-login.php", "/wp-admin/**", "/wp-content/**", "/wp-includes/**",
-                     "/wp-config.php.bak", "/assets/**", "/asset/**", "/static/**", "/static", ]
+                     "/wp-config.php.bak", "/assets/**", "/asset/**", "/static/**", "/static",
+                     "/webui", "/core/**", "/.git/**"]
 
 
 class CustomPrometheusMiddleware(PrometheusMiddleware):
