@@ -286,6 +286,8 @@ async def get_users(api_id: int):
 async def get_blogs(api_id: int, blog_id: int):
     if api_id not in blogs:
         raise HTTPException(status_code=404, detail="Blog data not found")
+    if blog_id > len(blogs[api_id]):
+        raise HTTPException(status_code=404, detail="Blog data not found")
     return blogs[api_id][blog_id - 1]
 
 
