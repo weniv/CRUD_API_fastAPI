@@ -2,8 +2,6 @@ services:
   fastapi_crud_api:
     build: .
     container_name: fastapi_crud_api
-    ports:
-      - "9101:9101"
     environment:
       - TZ=Asia/Seoul
     networks:
