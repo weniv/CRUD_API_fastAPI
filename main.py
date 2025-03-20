@@ -21,7 +21,7 @@ from data import (
 )
 from uuid import UUID, uuid4
 from typing import Optional
-from starlette_prometheus import metrics, PrometheusMiddleware
+# from starlette_prometheus import metrics, PrometheusMiddleware
 
 exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**", "/.env",
                      "/metrics", "/metrics/", "/metrics/**",
@@ -36,12 +36,12 @@ exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**", "/.env",
                      "/webui", "/core/**", "/.git/**"]
 
 
-class CustomPrometheusMiddleware(PrometheusMiddleware):
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        if request.url.path in exclude_endpoints:
-            return await call_next(request)
-        else:
-            return await super().dispatch(request, call_next)
+# class CustomPrometheusMiddleware(PrometheusMiddleware):
+#     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
+#         if request.url.path in exclude_endpoints:
+#             return await call_next(request)
+#         else:
+#             return await super().dispatch(request, call_next)
 
 
 version_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -55,11 +55,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(CustomPrometheusMiddleware)
+# app.add_middleware(CustomPrometheusMiddleware)
 
 app.mount("/asset", StaticFiles(directory="asset"), name="asset")
 
-app.add_route("/metrics/", metrics)
+# app.add_route("/metrics/", metrics)
 
 
 def genUUID():
