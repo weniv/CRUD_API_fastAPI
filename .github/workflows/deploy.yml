@@ -26,5 +26,5 @@ jobs:
             git pull origin main
 
             # 도커 컴포즈로 서비스 실행
-            docker-compose down 
-            docker-compose up -d --build
+            docker compose down 
+            docker compose up -d --build
