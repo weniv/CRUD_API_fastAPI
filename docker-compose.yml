@@ -1,0 +1,23 @@
+services:
+  fastapi_crud_api:
+    build: .
+    container_name: fastapi_crud_api
+    ports:
+      - "9101:9101"
+    environment:
+      - TZ=Asia/Seoul
+    networks:
+      - traefik-network  # 중요: Traefik 네트워크에 연결
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastapi-crud.rule=Host(`dev.wenivops.co.kr`) && PathPrefix(`/services/fastapi-crud`)" #이부분이 경로 지정
+      - "traefik.http.routers.fastapi-crud.entrypoints=websecure"
+      - "traefik.http.routers.fastapi-crud.tls=true"
+#      - "traefik.http.routers.fastapi-crud.tls.certresolver=myresolver"
+      - "traefik.http.services.fastapi-crud.loadbalancer.server.port=9101"  # 컨테이너 내부 포트
+      - "traefik.http.middlewares.fastapi-crud-strip.stripprefix.prefixes=/services/fastapi-crud"
+      - "traefik.http.routers.fastapi-crud.middlewares=fastapi-crud-strip"
+
+networks:
+  traefik-network:
+    external: true  # 중요: 기존 Traefik 네트워크 사용
