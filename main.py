@@ -46,7 +46,7 @@ exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**", "/.env",
 
 version_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 app = FastAPI(title="WENIV EDU API", description="WENIV EDU API", version=version_time,
-              openapi_url="/openapi.json", docs_url="/docs", redoc_url="/redoc",)
+              openapi_url="/openapi.json", docs_url="/docs", redoc_url="/redoc",root_path="/services/fastapi-crud")
 
 app.add_middleware(
     CORSMiddleware,
