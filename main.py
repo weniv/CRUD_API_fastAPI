@@ -56,6 +56,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # app.add_middleware(CustomPrometheusMiddleware)
 
 app.mount("/asset", StaticFiles(directory="asset"), name="asset")
@@ -333,27 +334,46 @@ async def get_blogs(api_id: int):
 
 ####################### 상품 #######################
 
+BASE_URL = "https://dev.wenivops.co.kr/services/fastapi-crud/"
 
+# 이미지 URL을 절대 경로로 변환하는 함수
+def fix_image_urls(item):
+    if isinstance(item, dict):
+        result = {}
+        for key, value in item.items():
+            if key == "thumbnailImg" and isinstance(value, str) and value.startswith("asset/"):
+                result[key] = BASE_URL + value
+            elif key == "detailInfoImage" and isinstance(value, list):
+                result[key] = [BASE_URL + img if isinstance(img, str) and img.startswith("asset/") else img for img in value]
+            elif isinstance(value, dict) or isinstance(value, list):
+                result[key] = fix_image_urls(value)
+            else:
+                result[key] = value
+        return result
+    elif isinstance(item, list):
+        return [fix_image_urls(i) for i in item]
+    else:
+        return item
 # 상품 검색 API 엔드포인트
-@app.get("/{api_id}/product/search", tags=["Product Endpoint"], description="상품 검색 API")
-async def search_product(api_id: int, keyword: str):
-    if api_id not in products:
-        raise HTTPException(status_code=404, detail="Product data not found")
-    result = []
-    for product in products[api_id]:
-        if keyword in product["productName"]:
-            result.append(product)
-    return result
-
-
-# 상품 상세 API 엔드포인트
-@app.get("/{api_id}/product/{product_id}", tags=["Product Endpoint"], description="상품 상세 API")
-async def get_product_detail(api_id: int, product_id: int):
-    if api_id not in products:
-        raise HTTPException(status_code=404, detail="Product data not found")
-    if product_id < 1 or product_id > len(products[api_id]):
-        raise HTTPException(status_code=404, detail="Product not found")
-    return products[api_id][product_id - 1]
+# @app.get("/{api_id}/product/search", tags=["Product Endpoint"], description="상품 검색 API")
+# async def search_product(api_id: int, keyword: str):
+#     if api_id not in products:
+#         raise HTTPException(status_code=404, detail="Product data not found")
+#     result = []
+#     for product in products[api_id]:
+#         if keyword in product["productName"]:
+#             result.append(product)
+#     return result
+#
+#
+# # 상품 상세 API 엔드포인트
+# @app.get("/{api_id}/product/{product_id}", tags=["Product Endpoint"], description="상품 상세 API")
+# async def get_product_detail(api_id: int, product_id: int):
+#     if api_id not in products:
+#         raise HTTPException(status_code=404, detail="Product data not found")
+#     if product_id < 1 or product_id > len(products[api_id]):
+#         raise HTTPException(status_code=404, detail="Product not found")
+#     return products[api_id][product_id - 1]
 
 
 # 상품 생성 API 엔드포인트
@@ -388,12 +408,40 @@ async def delete_product(api_id: int, product_id: int):
 
 
 # 상품 리스트 API 엔드포인트
+# @app.get("/{api_id}/product", tags=["Product Endpoint"], description="상품 리스트 API")
+# async def get_products(api_id: int):
+#     if api_id not in products:
+#         raise HTTPException(status_code=404, detail="Product data not found")
+#     return products[api_id]
+# 상품 리스트 API 엔드포인트 수정
 @app.get("/{api_id}/product", tags=["Product Endpoint"], description="상품 리스트 API")
 async def get_products(api_id: int):
     if api_id not in products:
         raise HTTPException(status_code=404, detail="Product data not found")
-    return products[api_id]
+    # URL 수정 후 반환
+    return fix_image_urls(products[api_id])
 
+# 상품 상세 API 엔드포인트 수정
+@app.get("/{api_id}/product/{product_id}", tags=["Product Endpoint"], description="상품 상세 API")
+async def get_product_detail(api_id: int, product_id: int):
+    if api_id not in products:
+        raise HTTPException(status_code=404, detail="Product data not found")
+    if product_id < 1 or product_id > len(products[api_id]):
+        raise HTTPException(status_code=404, detail="Product not found")
+    # URL 수정 후 반환
+    return fix_image_urls(products[api_id][product_id - 1])
+
+# 상품 검색 API 엔드포인트 수정
+@app.get("/{api_id}/product/search", tags=["Product Endpoint"], description="상품 검색 API")
+async def search_product(api_id: int, keyword: str):
+    if api_id not in products:
+        raise HTTPException(status_code=404, detail="Product data not found")
+    result = []
+    for product in products[api_id]:
+        if keyword in product["productName"]:
+            result.append(product)
+    # URL 수정 후 반환
+    return fix_image_urls(result)
 
 ####################### 유저 #######################
 
