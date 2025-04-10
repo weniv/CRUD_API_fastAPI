@@ -18,13 +18,14 @@ services:
       - "traefik.http.middlewares.fastapi-crud-strip.stripprefix.prefixes=/services/fastapi-crud"
       - "traefik.http.routers.fastapi-crud.middlewares=fastapi-crud-strip"
 
-#      - "traefik.http.routers.fastapi-crud-static.rule=Host(`dev.wenivops.co.kr`) && PathPrefix(`/services/fastapi-crud/asset`)"
-#      - "traefik.http.routers.fastapi-crud-static.entrypoints=websecure"
-#      - "traefik.http.routers.fastapi-crud-static.tls=true"
-#      - "traefik.http.routers.fastapi-crud-static.tls.certresolver=myresolver"
-#      - "traefik.http.middlewares.fastapi-crud-static-strip.stripprefix.prefixes=/services/fastapi-crud"
-#      - "traefik.http.routers.fastapi-crud-static.middlewares=fastapi-crud-static-strip"
-#      - "traefik.http.routers.fastapi-crud-static.service=fastapi-crud"
+      - "traefik.http.routers.fastapi-crud-static.rule=Host(`dev.wenivops.co.kr`) && PathPrefix(`/services/fastapi-crud/asset`)"
+      - "traefik.http.routers.fastapi-crud-static.entrypoints=websecure"
+      - "traefik.http.routers.fastapi-crud-static.tls=true"
+      - "traefik.http.routers.fastapi-crud-static.tls.certresolver=myresolver"
+      # 이 줄은 제거하고 주석처리하세요
+      # - "traefik.http.middlewares.fastapi-crud-static-strip.stripprefix.prefixes=/services/fastapi-crud"
+      # - "traefik.http.routers.fastapi-crud-static.middlewares=fastapi-crud-static-strip"
+      - "traefik.http.routers.fastapi-crud-static.service=fastapi-crud"
 
 networks:
   traefik-network:

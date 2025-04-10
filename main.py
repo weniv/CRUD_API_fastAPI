@@ -334,17 +334,24 @@ async def get_blogs(api_id: int):
 
 ####################### 상품 #######################
 
-BASE_URL = "https://dev.wenivops.co.kr/services/fastapi-crud/"
+
 
 # 이미지 URL을 절대 경로로 변환하는 함수
 def fix_image_urls(item):
+    # 두 가지 방식으로 URL 생성 시도
+    BASE_URL = "https://dev.wenivops.co.kr/services/fastapi-crud/"
+
+    # 또는 디버깅을 위해 이벤트 핸들러에 로깅 추가
+    print(f"이미지 URL 변환: {item}")
+
     if isinstance(item, dict):
         result = {}
         for key, value in item.items():
             if key == "thumbnailImg" and isinstance(value, str) and value.startswith("asset/"):
                 result[key] = BASE_URL + value
             elif key == "detailInfoImage" and isinstance(value, list):
-                result[key] = [BASE_URL + img if isinstance(img, str) and img.startswith("asset/") else img for img in value]
+                result[key] = [BASE_URL + img if isinstance(img, str) and img.startswith("asset/") else img for img in
+                               value]
             elif isinstance(value, dict) or isinstance(value, list):
                 result[key] = fix_image_urls(value)
             else:
