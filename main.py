@@ -58,7 +58,7 @@ app.add_middleware(
 
 # app.add_middleware(CustomPrometheusMiddleware)
 
-app.mount("/asset", StaticFiles(directory="asset"), name="asset")
+app.mount("/services/fastapi-crud/asset", StaticFiles(directory="asset"), name="asset")
 
 # app.add_route("/metrics/", metrics)
 
