@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 9101
 
 # 애플리케이션 실행
-CMD ["gunicorn", "main:app", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:9101", "-w", "2"]
+CMD ["gunicorn", "main:app", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:9101", "-w", "1"]
