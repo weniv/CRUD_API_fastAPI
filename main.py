@@ -22,6 +22,15 @@ from data import (
 from uuid import UUID, uuid4
 from typing import Optional
 # from starlette_prometheus import metrics, PrometheusMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class NoCacheMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, proxy-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
 
 exclude_endpoints = ["/.aws/**", "/.env**", "/.env/**", ".git/**", "/.env",
                      "/metrics", "/metrics/", "/metrics/**",
@@ -54,8 +63,10 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+
 )
 
+app.add_middleware(NoCacheMiddleware)
 
 # app.add_middleware(CustomPrometheusMiddleware)
 
@@ -567,6 +578,7 @@ async def reset_data():
         users = {i: initial_users[:] for i in range(1, 1001)}
         courses = {i: initial_courses[:] for i in range(1, 1001)}
         login_user = {i: initial_login[:] for i in range(1, 1001)}
+        print(f"[{datetime.datetime.now()}] 데이터 초기화 완료")  # 로그 추가
 
 
 # 백그라운드 작업으로 데이터 초기화 실행
