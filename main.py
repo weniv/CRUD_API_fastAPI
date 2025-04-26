@@ -331,8 +331,7 @@ async def delete_blog(api_id: int, blog_id: int):
         raise HTTPException(status_code=404, detail="Blog data not found")
     if blog_id > len(blogs[api_id]):
         raise HTTPException(status_code=404, detail="Blog data not found")
-
-    blogs[api_id].pop(blog_id - 1)
+    blogs[api_id][blog_id - 1] = {}
     return {"message": "Blog deleted successfully"}
 
 
@@ -422,7 +421,7 @@ async def delete_product(api_id: int, product_id: int):
         raise HTTPException(status_code=404, detail="Product data not found")
     if product_id < 1 or product_id > len(products[api_id]):
         raise HTTPException(status_code=404, detail="Product not found")
-    products[api_id].pop(product_id - 1)
+    products[api_id][product_id - 1] = {}
     return {"message": "Product deleted successfully"}
 
 
@@ -502,7 +501,7 @@ async def delete_user(api_id: int, user_id: int):
         raise HTTPException(status_code=404, detail="User data not found")
     if user_id < 1 or user_id > len(users[api_id]):
         raise HTTPException(status_code=404, detail="User not found")
-    users[api_id].pop(user_id - 1)
+    users[api_id][user_id - 1] = {}
     return {"message": "User deleted successfully"}
 
 
@@ -554,7 +553,7 @@ async def delete_course(api_id: int, course_id: int):
         raise HTTPException(status_code=404, detail="Course data not found")
     if course_id < 1 or course_id > len(courses[api_id]):
         raise HTTPException(status_code=404, detail="Course not found")
-    courses[api_id].pop(course_id - 1)
+    courses[api_id][course_id - 1] = {}
     return {"message": "Course deleted successfully"}
 
 
