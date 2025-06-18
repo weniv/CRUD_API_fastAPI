@@ -3,7 +3,8 @@
 웹에서 fetch를 통해 비동기 통신을 연습할 수 있도록 CRUD API 서비스를 제공합니다.
 
 ## 0. 배포 URL
-배포된 API 서버를 통해 바로 테스트해볼 수 있습니다.
+https://dev.wenivops.co.kr/services/fastapi-crud
+
 
 ## 1. 기술 스택
 - FastAPI
