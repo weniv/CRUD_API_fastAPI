@@ -439,16 +439,6 @@ async def get_products(api_id: int):
     # URL 수정 후 반환
     return fix_image_urls(products[api_id])
 
-# 상품 상세 API 엔드포인트 수정
-@app.get("/{api_id}/product/{product_id}", tags=["Product Endpoint"], description="상품 상세 API")
-async def get_product_detail(api_id: int, product_id: int):
-    if api_id not in products:
-        raise HTTPException(status_code=404, detail="Product data not found")
-    if product_id < 1 or product_id > len(products[api_id]):
-        raise HTTPException(status_code=404, detail="Product not found")
-    # URL 수정 후 반환
-    return fix_image_urls(products[api_id][product_id - 1])
-
 # 상품 검색 API 엔드포인트 수정
 @app.get("/{api_id}/product/search", tags=["Product Endpoint"], description="상품 검색 API")
 async def search_product(api_id: int, keyword: str):
@@ -460,6 +450,16 @@ async def search_product(api_id: int, keyword: str):
             result.append(product)
     # URL 수정 후 반환
     return fix_image_urls(result)
+
+# 상품 상세 API 엔드포인트 수정
+@app.get("/{api_id}/product/{product_id}", tags=["Product Endpoint"], description="상품 상세 API")
+async def get_product_detail(api_id: int, product_id: int):
+    if api_id not in products:
+        raise HTTPException(status_code=404, detail="Product data not found")
+    if product_id < 1 or product_id > len(products[api_id]):
+        raise HTTPException(status_code=404, detail="Product not found")
+    # URL 수정 후 반환
+    return fix_image_urls(products[api_id][product_id - 1])
 
 ####################### 유저 #######################
 
