@@ -20,6 +20,7 @@ from data import (
     initial_markdown_blog,
 )
 from uuid import UUID, uuid4
+from vibe import router as vibe_router, next_reset_time, reset_vibe
 from typing import Optional
 # from starlette_prometheus import metrics, PrometheusMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -71,6 +72,9 @@ app.add_middleware(NoCacheMiddleware)
 # app.add_middleware(CustomPrometheusMiddleware)
 
 app.mount("/asset", StaticFiles(directory="asset"), name="asset")
+
+# 바이브 코딩 실습 DB. /{api_id}/... 경로보다 먼저 등록해야 /vibe/... 요청이 가로채이지 않습니다.
+app.include_router(vibe_router)
 
 # app.add_route("/metrics/", metrics)
 
@@ -191,7 +195,18 @@ async def maininfo():
                 "Delete Course": "DELETE /{api_id}/course/{course_id}",
             },
             "Markdown Blog": {"Get Markdown Blog": "GET /markdownblog"},
+            "Vibe Coding": {
+                "Get Space Info": "GET /vibe/{space}",
+                "Sheet View": "GET /vibe/{space}/_sheet",
+                "Get List": "GET /vibe/{space}/{collection}",
+                "Get Detail": "GET /vibe/{space}/{collection}/{id}",
+                "Create": "POST /vibe/{space}/{collection}",
+                "Replace": "PUT /vibe/{space}/{collection}/{id}",
+                "Update": "PATCH /vibe/{space}/{collection}/{id}",
+                "Delete": "DELETE /vibe/{space}/{collection}/{id}",
+            },
         },
+        "Reset": "모든 데이터는 매일 새벽 4시(KST)에 초기화됩니다.",
     }
 
 
@@ -568,16 +583,18 @@ async def get_courses(api_id: int):
 ####################### 데이터 초기화 #######################
 
 
-# 30분마다 데이터 초기화
+# 매일 새벽 4시(KST)에 데이터 초기화 (교안 데이터 + 바이브 실습 DB)
 async def reset_data():
     global blogs, products, users, courses, login_user
     while True:
-        await asyncio.sleep(1800)  # 30분 대기
+        reset_at = next_reset_time()
+        await asyncio.sleep((reset_at - datetime.datetime.now(reset_at.tzinfo)).total_seconds())
         blogs = {i: initial_blogs[:] for i in range(1, 1001)}
         products = {i: initial_products[:] for i in range(1, 1001)}
         users = {i: initial_users[:] for i in range(1, 1001)}
         courses = {i: initial_courses[:] for i in range(1, 1001)}
         login_user = {i: initial_login[:] for i in range(1, 1001)}
+        reset_vibe()
         print(f"[{datetime.datetime.now()}] 데이터 초기화 완료")  # 로그 추가
 
 

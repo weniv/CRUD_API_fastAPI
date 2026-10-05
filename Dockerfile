@@ -20,5 +20,5 @@ COPY . .
 # 포트 노출
 EXPOSE 9101
 
-# 애플리케이션 실행
+# 애플리케이션 실행 (데이터를 메모리에 두므로 워커는 반드시 1개)
 CMD ["gunicorn", "main:app", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:9101", "-w", "1"]

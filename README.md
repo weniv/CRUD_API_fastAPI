@@ -87,11 +87,27 @@ docker compose up -d --build
 - `PUT /{api_id}/course/{course_id}` - 코스 수정
 - `DELETE /{api_id}/course/{course_id}` - 코스 삭제
 
+#### 바이브 코딩 실습 DB
+가입·키 발급 없이 `{space}`(영문·숫자·`-`·`_`, 40자 이내)만 정하면 바로 쓸 수 있는 스키마리스 실습 DB입니다. 처음 POST하는 컬렉션은 자동으로 생깁니다.
+- `GET /vibe/{space}` - 컬렉션 목록, 데이터 수, 다음 초기화 시각
+- `GET /vibe/{space}/_sheet` - 데이터를 표(시트)로 보는 페이지 (누구나 열람 가능)
+- `GET /vibe/{space}/_logs` - 최근 요청 50건
+- `GET /vibe/{space}/{collection}` - 목록 조회 (`?sort=필드`, `?sort=-필드`, `?limit=`, `?offset=`)
+- `GET /vibe/{space}/{collection}/{id}` - 하나 조회
+- `POST /vibe/{space}/{collection}` - 생성
+- `PUT /vibe/{space}/{collection}/{id}` - 전체 수정
+- `PATCH /vibe/{space}/{collection}/{id}` - 부분 수정
+- `DELETE /vibe/{space}/{collection}/{id}` - 삭제
+
+`password`처럼 개인정보로 보이는 필드는 저장을 거부합니다. 공간당 컬렉션 20개, 컬렉션당 데이터 500개, 데이터 하나당 10KB로 제한합니다.
+
 #### 기타
 - `GET /markdownblog` - 마크다운 블로그 조회
 - `GET /asset/*` - 정적 파일 접근 (이미지 등)
 
 **참고**: `{api_id}`는 1-1000 사이의 숫자입니다. 각 API ID별로 독립적인 데이터 공간을 제공합니다.
+
+**초기화**: 교안 데이터와 바이브 코딩 실습 DB 모두 매일 새벽 4시(KST)에 초기화됩니다.
 
 
 ## 4. 사용 예시
@@ -178,6 +194,8 @@ fetch('https://dev.wenivops.co.kr/services/fastapi-crud/login_confirm', {
 ```
 CRUD_API_fastAPI/
 ├── main.py              # FastAPI 애플리케이션 메인 파일
+├── vibe.py              # 바이브 코딩 실습 DB (/vibe)
+├── vibe_sheet.html      # 실습 DB 시트 보기 페이지
 ├── requirements.txt     # Python 의존성 목록
 ├── database.db         # SQLite 데이터베이스 파일 (자동 생성)
 └── README.md           # 프로젝트 설명서
@@ -194,7 +212,7 @@ SQLAlchemy 모델을 수정하여 데이터베이스 스키마를 변경할 수 
 ### CORS 오류 발생 시
 브라우저에서 API 호출 시 CORS 오류가 발생하면, FastAPI 애플리케이션에 CORS 미들웨어가 추가되어 있는지 확인하세요.
 ### 데이터베이스 초기화
-데이터베이스를 초기화하려면 database.db 파일을 삭제하고 서버를 재시작하면 됩니다.
+모든 데이터는 메모리에 저장되며 매일 새벽 4시(KST)에 자동으로 초기화됩니다. 서버를 재시작해도 초기 상태로 돌아갑니다. 메모리에 저장하므로 gunicorn 워커는 반드시 1개로 유지해야 합니다.
 
 ## 9. 라이선스
 이 프로젝트는 학습 목적으로 제공됩니다.

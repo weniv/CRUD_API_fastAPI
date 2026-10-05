@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WENIV 바이브 시트</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #fff; --line: #dfe3e8; --head: #f0f2f5;
+    --text: #1f2328; --sub: #6a737d; --accent: #2e6ff2; --new: #fff4c2;
+    --ok: #1a7f37; --err: #cf222e; --font: 14px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: var(--font)/1.5 -apple-system, "Pretendard", "Malgun Gothic", sans-serif; }
+  body.present { --font: 20px; }
+  header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+    padding: 12px 20px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  h1 { font-size: 1.15em; margin: 0; }
+  h1 span { color: var(--accent); }
+  .grow { flex: 1; }
+  .notice { padding: 8px 20px; background: #fff8e5; border-bottom: 1px solid #f0e2b6;
+    font-size: .9em; color: #6b5300; }
+  .api { font-family: Consolas, monospace; font-size: .85em; color: var(--sub); word-break: break-all; }
+  button, input { font: inherit; }
+  button { border: 1px solid var(--line); background: var(--panel); border-radius: 6px;
+    padding: 4px 10px; cursor: pointer; }
+  button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  input { border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; width: 12em; }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; padding: 16px 20px; }
+  body.present main { grid-template-columns: minmax(0, 1fr) 460px; }
+  @media (max-width: 900px) { main, body.present main { grid-template-columns: 1fr; } }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px; border-bottom: 1px solid var(--line); }
+  .tabs button { border-radius: 6px 6px 0 0; }
+  .tabs .count { color: var(--sub); font-size: .85em; margin-left: 4px; }
+  .tabs button.on .count { color: #dce6ff; }
+  .view { overflow: auto; max-height: calc(100vh - 210px); }
+  table { border-collapse: collapse; width: max-content; min-width: 100%; }
+  th, td { border: 1px solid var(--line); padding: 4px 10px; text-align: left; vertical-align: top;
+    max-width: 320px; white-space: pre-wrap; word-break: break-word; }
+  th { background: var(--head); position: sticky; top: 0; font-weight: 600; }
+  td.rownum, th.rownum { background: var(--head); color: var(--sub); text-align: center; width: 3em; }
+  td.meta { color: var(--sub); font-size: .85em; }
+  tr.new td { animation: flash 2.5s ease-out; }
+  @keyframes flash { from { background: var(--new); } to { background: transparent; } }
+  pre { margin: 0; padding: 12px; font: .9em/1.5 Consolas, monospace; white-space: pre-wrap; }
+  .empty { padding: 40px 20px; text-align: center; color: var(--sub); }
+  .logs h2 { font-size: 1em; margin: 0; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .logs ol { list-style: none; margin: 0; padding: 0; max-height: calc(100vh - 210px); overflow: auto; }
+  .logs li { padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  .logs li.new { animation: flash 2.5s ease-out; }
+  .line1 { display: flex; gap: 8px; align-items: baseline; font-family: Consolas, monospace; }
+  .method { font-weight: 700; min-width: 4.2em; }
+  .status.ok { color: var(--ok); } .status.err { color: var(--err); font-weight: 700; }
+  .path { word-break: break-all; }
+  .time { color: var(--sub); font-size: .8em; }
+  .body { margin-top: 4px; font: .85em Consolas, monospace; color: var(--sub); word-break: break-all; }
+</style>
+</head>
+<body>
+<header>
+  <h1>WENIV 바이브 시트 · <span id="space"></span></h1>
+  <div class="grow api" id="api"></div>
+  <span id="countdown"></span>
+  <form id="move"><input id="moveInput" placeholder="다른 공간 이름"> <button>이동</button></form>
+  <button id="jsonBtn">JSON 보기</button>
+  <button id="presentBtn">발표 모드</button>
+</header>
+<div class="notice">실습용 DB입니다. 누구나 이 화면을 볼 수 있고, 매일 새벽 4시에 모든 데이터가 초기화됩니다. 비밀번호·전화번호 같은 개인정보는 저장하지 마세요.</div>
+<main>
+  <section>
+    <div class="tabs" id="tabs"></div>
+    <div class="view" id="view"></div>
+  </section>
+  <section class="logs">
+    <h2>최근 요청</h2>
+    <ol id="logs"></ol>
+  </section>
+</main>
+<script>
+  const base = location.pathname.replace(/\/_sheet\/?$/, "");
+  const spaceName = decodeURIComponent(base.split("/").pop());
+  const state = { collection: null, json: false, seenRows: null, seenLogs: null, resetAt: null };
+
+  document.getElementById("space").textContent = spaceName;
+  document.getElementById("api").textContent = location.origin + base + "/{컬렉션}";
+  document.title = "바이브 시트 · " + spaceName;
+
+  function el(tag, props, children) {
+    const node = document.createElement(tag);
+    Object.assign(node, props || {});
+    (children || []).forEach((child) => node.append(child));
+    return node;
+  }
+
+  function cellText(value) {
+    if (value === undefined) return "";
+    if (value !== null && typeof value === "object") return JSON.stringify(value);
+    return String(value);
+  }
+
+  async function getJSON(url) {
+    const res = await fetch(url, { cache: "no-store", headers: { "X-Vibe-Sheet": "1" } });
+    if (!res.ok) throw new Error(res.status);
+    return res.json();
+  }
+
+  function renderTabs(collections) {
+    const tabs = document.getElementById("tabs");
+    const names = Object.keys(collections);
+    if (!names.includes(state.collection)) state.collection = names[0] || null;
+    tabs.replaceChildren(...names.map((name) => {
+      const button = el("button", { className: name === state.collection ? "on" : "" },
+        [name, el("span", { className: "count", textContent: collections[name] })]);
+      button.onclick = () => { state.collection = name; state.seenRows = null; refresh(); };
+      return button;
+    }));
+    if (!names.length) tabs.replaceChildren(el("span", { className: "time", textContent: "아직 컬렉션이 없습니다" }));
+  }
+
+  function renderTable(docs) {
+    const view = document.getElementById("view");
+    if (!state.collection) {
+      view.replaceChildren(el("div", { className: "empty",
+        textContent: "아직 저장된 데이터가 없습니다. 앱에서 POST 요청을 보내면 여기에 표로 나타납니다." }));
+      return;
+    }
+    if (state.json) {
+      view.replaceChildren(el("pre", { textContent: JSON.stringify(docs, null, 2) }));
+      return;
+    }
+    const fields = [];
+    docs.forEach((doc) => Object.keys(doc).forEach((key) => {
+      if (!["id", "createdAt", "updatedAt"].includes(key) && !fields.includes(key)) fields.push(key);
+    }));
+    const columns = ["id", ...fields, "createdAt", "updatedAt"];
+    const isFirstRender = state.seenRows === null;
+    const seen = new Set(state.seenRows || []);
+    const head = el("tr", {}, [el("th", { className: "rownum", textContent: "#" }),
+      ...columns.map((c) => el("th", { textContent: c }))]);
+    const rows = docs.map((doc, index) => el("tr", { className: !isFirstRender && !seen.has(doc.id) ? "new" : "" }, [
+      el("td", { className: "rownum", textContent: index + 1 }),
+      ...columns.map((c) => el("td", { className: c === "createdAt" || c === "updatedAt" ? "meta" : "",
+        textContent: cellText(doc[c]) })),
+    ]));
+    state.seenRows = docs.map((doc) => doc.id);
+    view.replaceChildren(docs.length
+      ? el("table", {}, [el("thead", {}, [head]), el("tbody", {}, rows)])
+      : el("div", { className: "empty", textContent: "이 컬렉션은 비어 있습니다." }));
+  }
+
+  function renderLogs(logs) {
+    const isFirstRender = state.seenLogs === null;
+    const seen = new Set(state.seenLogs || []);
+    const keyOf = (log) => log.time + log.method + log.path + log.status + log.body;
+    document.getElementById("logs").replaceChildren(...(logs.length ? logs.map((log) => {
+      const ok = log.status < 400;
+      const children = [
+        el("div", { className: "line1" }, [
+          el("span", { className: "method", textContent: log.method }),
+          el("span", { className: "status " + (ok ? "ok" : "err"), textContent: log.status }),
+          el("span", { className: "path", textContent: log.path }),
+        ]),
+        el("div", { className: "time", textContent: log.time.replace("T", " ").slice(0, 19) }),
+      ];
+      if (log.body) children.push(el("div", { className: "body", textContent: log.body }));
+      return el("li", { className: !isFirstRender && !seen.has(keyOf(log)) ? "new" : "" }, children);
+    }) : [el("li", { className: "time", textContent: "아직 요청이 없습니다." })]));
+    state.seenLogs = logs.map(keyOf);
+  }
+
+  function renderCountdown() {
+    if (!state.resetAt) return;
+    const left = Math.max(0, new Date(state.resetAt) - Date.now());
+    const h = Math.floor(left / 3600000), m = Math.floor(left / 60000) % 60;
+    document.getElementById("countdown").textContent = `초기화까지 ${h}시간 ${m}분`;
+  }
+
+  async function refresh() {
+    try {
+      const info = await getJSON(base);
+      state.resetAt = info.resetAt;
+      renderTabs(info.collections);
+      const docs = state.collection ? await getJSON(base + "/" + encodeURIComponent(state.collection)) : [];
+      renderTable(docs);
+      renderLogs(await getJSON(base + "/_logs"));
+      renderCountdown();
+    } catch (error) {
+      document.getElementById("view").replaceChildren(el("div", { className: "empty",
+        textContent: "서버에 연결할 수 없습니다. 공간 이름을 확인해 주세요. (" + error.message + ")" }));
+    }
+  }
+
+  document.getElementById("jsonBtn").onclick = (event) => {
+    state.json = !state.json;
+    event.currentTarget.classList.toggle("on", state.json);
+    refresh();
+  };
+  document.getElementById("presentBtn").onclick = (event) => {
+    event.currentTarget.classList.toggle("on", document.body.classList.toggle("present"));
+  };
+  document.getElementById("move").onsubmit = (event) => {
+    event.preventDefault();
+    const name = document.getElementById("moveInput").value.trim();
+    if (name) location.href = base.replace(/[^/]+$/, encodeURIComponent(name)) + "/_sheet";
+  };
+
+  refresh();
+  setInterval(() => { if (!document.hidden) refresh(); }, 3000);
+  setInterval(renderCountdown, 30000);
+</script>
+</body>
+</html>
