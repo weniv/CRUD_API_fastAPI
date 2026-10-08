@@ -278,3 +278,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+
+# 사내 서버 접속 정보 (이 컴퓨터에만 둠, 절대 올리지 말 것)
+사내서버접속.txt
