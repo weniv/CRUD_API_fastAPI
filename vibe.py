@@ -246,7 +246,9 @@ async def vibe_get(request: Request, space: str, collection: str, doc_id: str):
         _check_name(collection, "컬렉션")
         found = spaces.get(space)
         col = found["collections"].get(collection) if found else None
-        return 200, col["docs"][_find_doc(col, doc_id)]
+        # 없는 컬렉션이면 col이 None이라 키를 먼저 찾아 404를 낸다 (col["docs"]부터 읽으면 500)
+        key = _find_doc(col, doc_id)
+        return 200, col["docs"][key]
 
     return await _run(request, space, action)
 
@@ -303,7 +305,8 @@ async def vibe_delete(request: Request, space: str, collection: str, doc_id: str
         _check_name(collection, "컬렉션")
         found = _get_space(space, create=True)
         col = _get_collection(found, collection, create=False)
-        doc = col["docs"].pop(_find_doc(col, doc_id))
+        key = _find_doc(col, doc_id)
+        doc = col["docs"].pop(key)
         return 200, {"message": "삭제되었습니다.", "id": doc["id"]}
 
     return await _run(request, space, action)
